@@ -1,0 +1,16 @@
+{
+    "compilerOptions":  {
+        "moduleResolution": "node",  // Ensure module resolution is set to 'node'
+        "target": "ESNext", // Or the version of ECMAScript you are targeting
+        "module": "ESNext", // Or the version of ECMAScript you are targeting
+        "checkJs": true,
+        "allowJs": true,
+        "strict": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": "./",
+        "paths": {
+            "*": ["node_modules/*"]
+        }
+    },
+}

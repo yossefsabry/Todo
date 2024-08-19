@@ -1,23 +1,42 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "main": "index.mjs",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/index.mjs",
-    "start:dev": "nodemon ./src/index.mjs"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "express-validator": "^7.1.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.4"
-  }
+    "name": "server",
+    "version": "1.0.0",
+    "main": "index.mjs",
+    "type": "module",
+    "module": "ES2022",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "run": "node index.mjs",
+        "dev": "nodemon index.mjs"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "@types/express-validator": "^2.20.33",
+        "@types/mongoose": "^5.11.96",
+        "bcrypt": "^5.1.1",
+        "body-parser": "^1.20.2",
+        "connect-mongo": "^5.1.0",
+        "cookie-parser": "^1.4.6",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "express-session": "^1.18.0",
+        "express-validator": "^7.2.0",
+        "jsonwebtoken": "^9.0.2",
+        "mongoose": "^8.5.3"
+    },
+    "devDependencies": {
+        "@types/bcrypt": "^5.0.2",
+        "@types/cookie-parser": "^1.4.7",
+        "@types/cors": "^2.8.17",
+        "@types/express": "^4.17.21",
+        "@types/express-session": "^1.18.0",
+        "@types/jsonwebtoken": "^9.0.6",
+        "@types/node": "^22.4.0",
+        "nodemon": "^3.1.4",
+        "typescript": "^5.5.4"
+    }
 }

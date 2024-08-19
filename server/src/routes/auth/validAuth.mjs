@@ -1,0 +1,43 @@
+
+export const vaildatorRegisetr = {
+    firstname: { isLength: { options: { min: 3, max: 20, }, errorMessage: "not vaild firstname info" },
+        notEmpty: { errorMessage: "firstname is required"},
+        isString: { errorMessage: "firstname must be string"},
+    },
+    lastname: { isLength: { options: { min: 3, max: 20, }, errorMessage: "not vaild secondname info" },
+        notEmpty: { errorMessage: "secondname is required"},
+        isString: { errorMessage: "secondname must be string"},
+    },
+    email: { isLength: { options: { min: 3, max: 80, }, errorMessage: "not vaild email info" },
+        notEmpty: { errorMessage: "email is required"},
+        isString: { errorMessage: "email must be string"},
+        unique: { errorMessage: "email must be unique"},
+    },
+    age: { notEmpty: { errorMessage: "age is required"},
+        isNumber: { errorMessage: "age must be string"},
+    },
+    password: { isLength: { options: { min: 3 }, errorMessage: "not vaild password info" },
+        notEmpty: { errorMessage: "password is required"},
+        isString: { errorMessage: "password must be string"},
+        unique: { errorMessage: "password must be unique"},
+    },
+    confirmPassword: { isLength: { options: { min: 3 }, errorMessage: "not vaild confirmPassword info" },
+        notEmpty: { errorMessage: "confirmPassword is required"},
+        isString: { errorMessage: "confirmPassword must be string"},
+        unique: { errorMessage: "confirmPassword must be unique"},
+    },
+
+};
+
+export const vaildatorSign = {
+    email: { isLength: { options: { min: 3, max: 80, }, errorMessage: "not vaild email info" },
+        notEmpty: { errorMessage: "email is required"},
+        isString: { errorMessage: "email must be string"},
+        unique: { errorMessage: "email must be unique"},
+    },
+    password: { isLength: { options: { min: 3 }, errorMessage: "not vaild password info" },
+        notEmpty: { errorMessage: "password is required"},
+        isString: { errorMessage: "password must be string"},
+        unique: { errorMessage: "password must be unique"},
+    },
+};

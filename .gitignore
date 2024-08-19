@@ -1,0 +1,13 @@
+./server/.env
+./client/.env
+.env
+./*/.env
+./**/*/.env
+
+./server/node_modules/
+./server/node_modules/*
+./server/node_modules
+./client/node_modules/
+./node_modules/
+node_modules/
+./*/node_modules/

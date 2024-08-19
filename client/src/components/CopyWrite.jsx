@@ -1,22 +1,21 @@
-
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
-
-export default function CopyWrite(props) {
-	return (
-		<Typography
-			variant="body2"
-			color="text.secondary"
-			align="center"
-			{...props}
-		>
-			{"Copyright © "}
-			<Link color="inherit" href="">
-        Crud js
-			</Link>{" "}
-			{new Date().getFullYear()}
-			{"."}
-		</Typography>
-	);
+const CopyWrite =() => {
+    const callDate = () => {
+        const DateNow = new Date();
+        const year = DateNow.getFullYear();
+        return year + " - ";
+    };
+    return(
+        <>
+            <div className="wrapper d-block p-5">
+                @copywrite {callDate()} 
+                <span>
+                    <a href="https://github.com/yossefsabry" className="text-blue-600                                       hover:underline dark:text-blue-500 transition" target="_blank">
+                        yossefsabry
+                    </a>
+                </span>
+            </div>
+        </>
+    );
 };
+export default CopyWrite;
 
