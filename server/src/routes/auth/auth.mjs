@@ -13,6 +13,8 @@ authRouter.get("/",isAuth, (req,res) => {
 
 authRouter.post("/sign",checkSchema(vaildatorSign), controller.sign);
 authRouter.post("/register",checkSchema(vaildatorRegisetr), controller.register);
+authRouter.post("/logout",isAuth, controller.logout);
+
 
 export default authRouter;
 

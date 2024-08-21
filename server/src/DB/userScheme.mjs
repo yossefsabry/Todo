@@ -1,6 +1,13 @@
 import mongoose from 'mongoose';
 
 /**
+* @typedef Images
+* @property {string} url - The image's url.
+* @property {string} id - The image's id.
+* @property {string} using - The image's using.
+*/
+
+/**
  * @typedef {Object} UserSchema
  * @property {string} firstname - The user's first name.
  * @property {string} lastname - The user's second name.
@@ -8,6 +15,7 @@ import mongoose from 'mongoose';
  * @property {string} email - The user's email.
  * @property {string} bio - The user's bio.
  * @property {string} password - The user's password.
+ * @property {Array<Images>} images - The user's images.
  * @property {Date} RegisterDate - The user's RegisterDate.
  * @property {boolean} isAdmin - The user's check if he is admin.
  * @property {boolean} isDeleted - The user's check if he is deleted.
@@ -44,6 +52,11 @@ const userScheme = new mongoose.Schema({
     password: {
         type: String, required: true,
     },
+    images: [{
+        url: String,
+        id: String,
+        using: String
+    }],
     RegisterDate: {
         type: Date, default: Date.now,
     },

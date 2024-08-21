@@ -28,7 +28,6 @@ const todoSchema = new mongoose.Schema({
         ref: "User",
         required: true,
     },
-
     title: {
         type: String,required: true, unique: true ,
         minlength: 3,
@@ -57,7 +56,7 @@ const todoSchema = new mongoose.Schema({
     Group:  [{
         groupId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "task",
+            ref: "group",
         },
         groupName: {
             type: String, required: false, default: "Tasks",

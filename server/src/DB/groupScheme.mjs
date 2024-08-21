@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-
 /**
  * @typedef {Object} GroupSchema
  * @property {mongoose.Schema.Types.ObjectId} owner - the group's name.
@@ -11,6 +10,7 @@ import mongoose from 'mongoose';
  * @property {string} color - the color
  * @property {Date} createData - The group's create Data.
  * @property {boolean} isDeleted - The group's check if is deleted.
+ * @property {boolean} isPublic - The group's check if is deleted.
  */
 
 /** 
@@ -28,7 +28,7 @@ const groupSchema = new mongoose.Schema({
     }],
     groupName: {
         type: String,required: true, unique: true ,
-        minlength: 3,
+        minlength: 2,
         maxlength: 200,
     },
     groupTodos: [{
@@ -49,6 +49,9 @@ const groupSchema = new mongoose.Schema({
     isDeleted: {
         type: Boolean, default: false,
     },
+    isPublic: {
+        type: Boolean, default: false,
+    }
 });
 
 const Group = mongoose.model('group', groupSchema);

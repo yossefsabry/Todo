@@ -58,7 +58,7 @@ export const createTodo = async(req, res, next) => {
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
  */
-export const deletePost = async(req, res, next) => {
+export const deleteTodo = async(req, res, next) => {
     const result = validationResult(req);
     if (!result.isEmpty()) {
         return res.status(400).json({ error: result.array() , color: "red"});
@@ -71,9 +71,14 @@ export const deletePost = async(req, res, next) => {
         return res.status(400).json({ error: 'todoId is not valid' });
     }
     try {
-        const todo = await Todo.find(todoId);
-        todo.isDeleted = true;
+        const todo = await Todo.findOneAndUpdate({ _id: todoId }, { isDeleted: true });
         await todo.save();
+        // deleting the todo from each group in the groupTodos
+        //todo.group.forEach(async(group) => {
+        //    const group = await Group.fingOne({ _id: group.groupId });
+        //    group.groupTodos = group.groupTodos.filter((todo) => todo !== todoId);
+        //    group.save();
+        //})
     } catch (error) {
          res.status(500).json({ error: `Internal server error: ${error}` });
     }
@@ -149,7 +154,7 @@ export const isComplate = async(req, res, next) => {
     res.status(200).json({
         color: "green",
         status: 200,
-        message: "adding todo to complate successfully"
+        message: "complete todo successfully",
     });
     next(); 
 }
@@ -176,26 +181,27 @@ export const allTodos = async(req, res, next) => {
 }
 
 
-/**
- * @description group todos
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- * @param {import('express').NextFunction} next
- * @returns {Promise<void>}
-*/
-export const groudTodos = async(req, res, next) => {
-    const { groupId } = req.body;
-    try {
-        const groupTodos = await Todo.find({ Group: groupId });
-        res.status(200).json({
-            groupTodos, color: "green", status: 200,
-            message: "group todos"
-        });
-        next();
-    }catch (error) {
-         res.status(500).json({ error: `Internal server error: ${error}` });
-    }
-}
+///**
+// * @description group todos
+// * @param {import('express').Request} req
+// * @param {import('express').Response} res
+// * @param {import('express').NextFunction} next
+// * @returns {Promise<void>}
+//*/
+//export const groudTodos = async(req, res, next) => {
+//    const { groupId } = req.params;
+//    try {
+//        const groupTodos = await Todo.find({ Group: groupId });
+//        res.status(200).json({
+//            groupTodos, color: "green", status: 200,
+//            message: "group todos"
+//        });
+//        next();
+//    }catch (error) {
+//         return res.status(500).json({ error: `Internal server error: ${error}` });
+//    }
+//}
+//
 
 /**
  * @description search todos
@@ -205,7 +211,7 @@ export const groudTodos = async(req, res, next) => {
  * @returns {Promise<void>}
 */
 export const searchTodos = async(req, res, next) => {
-    const { search } = req.body;
+    const { search } = req.params;
     try {
         const searchTodos = await Todo.find({
             title: { $regex: `${search}`, $options: 'i' } 
@@ -216,8 +222,43 @@ export const searchTodos = async(req, res, next) => {
         });
         next();
     } catch (error) {
-         res.status(500).json({ error: `Internal server error: ${error}` });
+         return res.status(500).json({ error: `Internal server error: ${error}` });
     }
 }
 
+
+/**
+ * @description update a todo by title or description or color
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
+export const updateTodo = async(req, res, next) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ error: result.array() , color: "red"});
+    }
+    const { todoId, title, description, color } = req.body;
+    if (!todoId) {
+        return res.status(400).json({ error: 'todoId is required' });
+    }
+    if (!mongoose.Types.ObjectId.isValid(todoId)) {
+        return res.status(400).json({ error: 'todoId is not valid' });
+    }
+    try {
+        const todo = await Todo.findOneAndUpdate({ _id: todoId }, {
+            title, description, color
+        });
+        await todo.save();
+    } catch (error) {
+         res.status(500).json({ error: `Internal server error: ${error}` });
+    }
+    res.status(200).json({
+        color: "green",
+        status: 200,
+        message: "update tod successfully",
+        todo
+    });
+    next(); 
+}
 

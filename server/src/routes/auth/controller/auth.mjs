@@ -1,9 +1,11 @@
 
 import { comparePassword, hashPassword } from "../../../utils/bcrypt.mjs"
 import User from "../../../DB/userScheme.mjs"
+import BlackListSchema from "../../../DB/BlackListSchema.mjs";
 // @ts-ignore  ignore the error of express-validator
 import { validationResult } from 'express-validator';
 import { generateToken } from "../../../utils/jwt.mjs";
+import path from "path";
 
 /**
  * @param {import("express").Request} req
@@ -82,6 +84,14 @@ export const register = async(req, res, next) => {
         });
     }
     const newPassword = hashPassword(password);
+    // get the current path for the file and get out for the path for the assets avater image
+    const __dirname = path.resolve();
+    const currentPath = path.join(__dirname, "./assets/avater.png");
+    const userImage = {
+        url: currentPath,
+        id: "1",
+        using: "avater profile image"
+    };
 
     try {
         const user = await User.create({
@@ -89,6 +99,7 @@ export const register = async(req, res, next) => {
             lastname,
             age,
             email,
+            images: [userImage],
             password: newPassword
         });
         await user.save();
@@ -99,4 +110,40 @@ export const register = async(req, res, next) => {
     } catch(error) {
         return res.status(500).json({ message: `Error: ${error}` , color: "red"});
     }
+};
+
+
+/**
+ * @description logout user
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @param {import("express").NextFunction} next
+ */
+export const logout = async(req, res, next) => {
+    try {
+        const authHeader = req.headers['cookie']; // get the session cookie from request header
+        if (!authHeader) return res.sendStatus(204); // No content
+        const cookie = authHeader.split('=')[1]; // If there is, split the cookie string to get the actual jwt token
+        const accessToken = cookie.split(';')[0];
+        const checkIfBlacklisted = await BlackListSchema.findOne({ token: accessToken }); // Check if that token is blacklisted
+        // if true, send a no content response.
+        if (checkIfBlacklisted) return res.sendStatus(204);
+        // otherwise blacklist token
+        const newBlacklist = new BlackListSchema({
+            token: accessToken,
+        });
+        await newBlacklist.save();
+        // Also clear request cookie on client
+        res.setHeader('Clear-Site-Data', '"cookies"');
+        res.status(200).json({ message: 'You are logged out!' , color: "green", status: 200 });
+        next();
+    } catch (err) {
+        res.status(500).json({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err,
+            color: "red"
+        });
+    }
+    res.end();
 };
