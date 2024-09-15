@@ -34,13 +34,13 @@ const init = (express ,app) => {
     const url = process.env.URL_DB || "mongodb://localhost:27017/test";
     connectDB(app,url);
 
-    app.get("/", (req, res) => {
+    app.get("/", (_, res) => {
         res.status(200).json({ massage: "welcome from yossef" });
     });
 
     app.use("/api/auth", authRouter);
     app.use("/api/todo", todoRouter);
-    app.use("/api/groups", groupsRouter);
+    app.use("/api/group", groupsRouter);
     app.use("/api/user", userRouter);
 
     app.use(globalErrorHandling);

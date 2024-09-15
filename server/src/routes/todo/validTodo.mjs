@@ -2,7 +2,7 @@
 
 
 export const createTodoSchema   = {
-    title: { isLength: { options: { min: 3 }, errorMessage: "not vaild title info" },
+    title: { isength: { options: { min: 3 }, errorMessage: "not vaild title info" },
         notEmpty: { errorMessage: "title is required"},
         isString: { errorMessage: "title must be string"},
         unique: { errorMessage: "title must be unique"},
@@ -37,3 +37,15 @@ export const updateTodoSchema = {
         isString: { errorMessage: "color must be string"},
     },
 };
+
+export const todoGroupAdding = {
+    todoId: { isLength: { options: { min: 3 }, errorMessage: "not vaild todoId info" },
+        notEmpty: { errorMessage: "todoId is required"},
+        isString: { errorMessage: "todoId must be string"},
+    },
+    groupId: { isLength: { options: { min: 3 }, errorMessage: "not vaild groupId info" },
+        notEmpty: { errorMessage: "groupId is required"},
+        isString: { errorMessage: "groupId must be string"},
+    },
+};
+

@@ -39,7 +39,10 @@ export const createTodo = async(req, res, next) => {
             await group.groupTodos.push(todo._id);
             await group.save();
         }catch (error) {
-            return res.status(500).json({ error: `Internal server error: ${error}`, color: "red", status: 500 });
+            return res.status(500).json({
+                error: `Internal server error: ${error}`,
+                color: "red", status: 500 
+            });
         }
 
     return res.status(201).json({
@@ -47,7 +50,10 @@ export const createTodo = async(req, res, next) => {
         message: "todo created successfully"
     });
     } catch (error) {
-         return res.status(500).json({ error: `Internal server error: ${error}`, color: "red", status: 500 });
+        return res.status(500).json({
+            error: `Internal server error: ${error}`,
+            color: "red", status: 500 
+        });
     }
 }
 
@@ -73,14 +79,16 @@ export const deleteTodo = async(req, res, next) => {
     try {
         const todo = await Todo.findOneAndUpdate({ _id: todoId }, { isDeleted: true });
         await todo.save();
-        // deleting the todo from each group in the groupTodos
-        //todo.group.forEach(async(group) => {
-        //    const group = await Group.fingOne({ _id: group.groupId });
-        //    group.groupTodos = group.groupTodos.filter((todo) => todo !== todoId);
-        //    group.save();
-        //})
+        console.log(todo.group);
+        if (todo.Group != undefined ) {
+            todo.Group.forEach(async(group) => {
+                group = await Group.findOne({ _id: group.groupId });
+                group.groupTodos = group.groupTodos.filter((todo) => todo !== todoId);
+                group.save();
+            })
+        }
     } catch (error) {
-         res.status(500).json({ error: `Internal server error: ${error}` });
+         return res.status(500).json({ error: `Internal server error: ${error}` });
     }
 
     res.status(200).json({
@@ -112,7 +120,9 @@ export const isFavorite = async(req, res, next) => {
     }
 
     try {
-        const todo = await Todo.findOneAndUpdate({ _id: todoId }, { isFavorite: true });
+        const todo = await Todo.findOneAndUpdate({ _id: todoId }, 
+            { isFavorite: true }
+        );
         await todo.save();
     } catch (error) {
         return res.status(500).json({ error: 'Internal server error' });
@@ -140,10 +150,10 @@ export const isComplate = async(req, res, next) => {
     }
     const { todoId } = req.body;
     if (!todoId) {
-        return res.status(400).json({ error: 'todoId is required' });
+        return res.status(400).json({ error: 'todo id is required' });
     }
     if (!mongoose.Types.ObjectId.isValid(todoId)) {
-        return res.status(400).json({ error: 'todoId is not valid' });
+        return res.status(400).json({ error: 'todo id is not valid' });
     }
     try {
         const todo = await Todo.findOneAndUpdate({ _id: todoId }, { isComplate: true });
@@ -211,11 +221,15 @@ export const allTodos = async(req, res, next) => {
  * @returns {Promise<void>}
 */
 export const searchTodos = async(req, res, next) => {
+    // slove the problem in the search todos the request is like this url
+    // localhost:3000/api/todo/searchTodo/yossef
     const { search } = req.params;
     try {
+        console.log(search);
         const searchTodos = await Todo.find({
             title: { $regex: `${search}`, $options: 'i' } 
         });
+        console.log(searchTodos);
         res.status(200).json({
             searchTodos, color: "green", status: 200,
             message: "search todos"
@@ -225,7 +239,6 @@ export const searchTodos = async(req, res, next) => {
          return res.status(500).json({ error: `Internal server error: ${error}` });
     }
 }
-
 
 /**
  * @description update a todo by title or description or color
@@ -239,9 +252,6 @@ export const updateTodo = async(req, res, next) => {
         return res.status(400).json({ error: result.array() , color: "red"});
     }
     const { todoId, title, description, color } = req.body;
-    if (!todoId) {
-        return res.status(400).json({ error: 'todoId is required' });
-    }
     if (!mongoose.Types.ObjectId.isValid(todoId)) {
         return res.status(400).json({ error: 'todoId is not valid' });
     }
@@ -262,3 +272,45 @@ export const updateTodo = async(req, res, next) => {
     next(); 
 }
 
+
+/**
+ * @description adding the todo into a group
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
+export const addingTodoGroup = async(req, res ,next) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ error: result.array() , color: "red"});
+    }
+    const { todoId, groupId } = req.body;
+    try {
+        const todo = await Todo.findById(todoId);
+        const group = await Group.findById(groupId);
+        if (!todo || ! group) {
+            return res.status(400).json({
+                error: 'error happend group or todo is not found' ,
+                color: "red",
+                status: 400
+            });
+        }
+        todo.Group.push({ groupId: groupId, groupName: group.groupName });
+        group.groupTodos.push( todoId );
+
+        await group.save();
+        await todo.save();
+        res.status(200).json({
+            message: "todo added to group successfully",
+            color: "green",
+            status: 200
+        });
+        next();
+    }catch(err) {
+        return res.status(500).json({
+            message: `Internal server error: ${err}`,
+            status: 500,
+            color: "red"
+        });
+    }
+}

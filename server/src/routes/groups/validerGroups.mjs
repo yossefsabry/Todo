@@ -25,6 +25,17 @@ export const userIdSchema = {
     },
 }
 
+
+export const groupShareSchema = {
+    userId: {
+        notEmpty: { errorMessage: "userId is required"},
+        isString: { errorMessage: "userId must be string"},
+    },
+    groupId: {
+        notEmpty: { errorMessage: "userId is required"},
+        isString: { errorMessage: "userId must be string"},
+    },
+}
 export const createGroupSchema = {
     userId: {
         notEmpty: { errorMessage: "userId is required"},

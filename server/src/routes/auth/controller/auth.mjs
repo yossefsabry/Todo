@@ -21,23 +21,27 @@ export const sign = async(req, res, next) => {
 
     const emailUser = await User.findOne({ email });
     if(!emailUser) {
-        return res.status(400).json({ message: "threre is no user with this email..." ,
+        return res.status(400).json({
+            message: "threre is no user with this email..." ,
             color: "red",
             status: 500 
         });
     }
         
     if(emailUser.isDeleted)  
-        return res.status(400).json({ message: "user is deleted..." , color: "red" , status: 400});
+        return res.status(400).json({ message: "user is deleted..." 
+            , color: "red" , status: 400});
 
     if(emailUser.isBlocked)  
-        return res.status(400).json({ message: "user is blocked..." , color: "red" , status: 400});
+        return res.status(400).json({ message: "user is blocked..." 
+            , color: "red" , status: 400});
     
 
     // check if the password is correct
     const match = comparePassword(password, emailUser.password);
     if(!match) {
-        return res.status(500).json({ message: "wrong password bad credentials..." ,
+        return res.status(500).json({
+            message: "wrong password bad credentials..." ,
             user: emailUser, status: 500, color: "red"
         });
     }
@@ -73,12 +77,15 @@ export const register = async(req, res, next) => {
     
     const { firstname, lastname, age, email, password, confirmPassword } = req.body;
     if (password !== confirmPassword) 
-        return res.status(400).json({ message: "Passwords do not match" , color: "red" });
-    
+        return res.status(400).json(
+            { message: "Passwords do not match" , color: "red" }
+        );
+
 
     const emailUser = await User.findOne({ email });
     if(emailUser) {
-        return res.status(400).json({ message: "Email already exists" ,
+        return res.status(400).json({
+            message: "Email already exists" ,
             color: "red",
             status: 500 
         });
@@ -103,12 +110,15 @@ export const register = async(req, res, next) => {
             password: newPassword
         });
         await user.save();
-        res.status(200).json({ message: "Register new user successfuly",
+        res.status(200).json({
+            message: "Register new user successfuly",
             user , status: true, color: "green"
         });
         next();
     } catch(error) {
-        return res.status(500).json({ message: `Error: ${error}` , color: "red"});
+        return res.status(500).json({
+            message: `Error: ${error}` , color: "red"}
+        );
     }
 };
 
@@ -125,7 +135,9 @@ export const logout = async(req, res, next) => {
         if (!authHeader) return res.sendStatus(204); // No content
         const cookie = authHeader.split('=')[1]; // If there is, split the cookie string to get the actual jwt token
         const accessToken = cookie.split(';')[0];
-        const checkIfBlacklisted = await BlackListSchema.findOne({ token: accessToken }); // Check if that token is blacklisted
+        const checkIfBlacklisted = await BlackListSchema.findOne(
+            { token: accessToken }
+        ); // Check if that token is blacklisted
         // if true, send a no content response.
         if (checkIfBlacklisted) return res.sendStatus(204);
         // otherwise blacklist token
@@ -135,7 +147,9 @@ export const logout = async(req, res, next) => {
         await newBlacklist.save();
         // Also clear request cookie on client
         res.setHeader('Clear-Site-Data', '"cookies"');
-        res.status(200).json({ message: 'You are logged out!' , color: "green", status: 200 });
+        res.status(200).json({
+            message: 'You are logged out!' , color: "green", status: 200 
+        });
         next();
     } catch (err) {
         res.status(500).json({

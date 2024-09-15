@@ -16,6 +16,7 @@ import mongoose from 'mongoose';
  * @property {string} bio - The user's bio.
  * @property {string} password - The user's password.
  * @property {Array<Images>} images - The user's images.
+ * @property {Array<any>} groupSharedWithUser - The user's groupSharedWithUser.
  * @property {Date} RegisterDate - The user's RegisterDate.
  * @property {boolean} isAdmin - The user's check if he is admin.
  * @property {boolean} isDeleted - The user's check if he is deleted.
@@ -56,6 +57,10 @@ const userScheme = new mongoose.Schema({
         url: String,
         id: String,
         using: String
+    }],
+    groupSharedWithUser : [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Group",
     }],
     RegisterDate: {
         type: Date, default: Date.now,
